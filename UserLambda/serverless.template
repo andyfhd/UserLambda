@@ -1,0 +1,226 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Transform": "AWS::Serverless-2016-10-31",
+  "Description": "AWS Serverless API that exposes the add, remove and get operations using Amazon DynamoDB.",
+  "Parameters": {
+    "ShouldCreateTable": {
+      "Type": "String",
+      "AllowedValues": [ "true", "false" ],
+      "Description": "If true then the DynamoDB user table will be created with the CloudFormation stack."
+    },
+    "UserTableName": {
+      "Type": "String",
+      "Description": "Name of DynamoDB table used to store the user. If left blank a new table will be created.",
+      "MinLength": "0"
+    },
+    "ReadCapacity": {
+      "Type": "Number",
+      "Description": "Read capacity for the DynamoDB user table.",
+      "Default": "3",
+      "MinValue": 1
+    },
+    "WriteCapacity": {
+      "Type": "Number",
+      "Description": "Write capacity for the DynamoDB user table.",
+      "Default": "3",
+      "MinValue": 1
+    }
+  },
+
+  "Conditions": {
+    "CreateUserTable": {
+      "Fn::Equals": [
+        { "Ref": "ShouldCreateTable" },
+        "true"
+      ]
+    },
+    "TableNameGenerated": {
+      "Fn::Equals": [
+        { "Ref": "UserTableName" },
+        ""
+      ]
+    }
+  },
+
+  "Resources": {
+
+    "GetUsers": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "UserLambda::UserLambda.Functions::GetUsersAsync",
+        "Runtime": "dotnetcore2.0",
+        "CodeUri": "",
+        "Description": "Function to get a list of users",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [ "AWSLambdaFullAccess" ],
+        "Environment": {
+          "Variables": {
+            "UserTable": {
+              "Fn::If": [
+                "CreateUserTable",
+                { "Ref": "UserTable" },
+                { "Ref": "UserTableName" }
+              ]
+            }
+          }
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/users",
+              "Method": "GET"
+            }
+          }
+        }
+      }
+    },
+
+    "GetUser": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "UserLambda::UserLambda.Functions::GetUserAsync",
+        "Runtime": "dotnetcore2.0",
+        "CodeUri": "",
+        "Description": "Function to get a single user",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [ "AWSLambdaFullAccess" ],
+        "Environment": {
+          "Variables": {
+            "UserTable": {
+              "Fn::If": [
+                "CreateUserTable",
+                { "Ref": "UserTable" },
+                { "Ref": "UserTableName" }
+              ]
+            }
+          }
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/users/{Id}",
+              "Method": "GET"
+            }
+          }
+        }
+      }
+    },
+
+
+    "AddUser": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "UserLambda::UserLambda.Functions::AddUserAsync",
+        "Runtime": "dotnetcore2.0",
+        "CodeUri": "",
+        "Description": "Function to add a user",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [ "AWSLambdaFullAccess" ],
+        "Environment": {
+          "Variables": {
+            "UserTable": {
+              "Fn::If": [
+                "CreateUserTable",
+                { "Ref": "UserTable" },
+                { "Ref": "UserTableName" }
+              ]
+            }
+          }
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/users",
+              "Method": "POST"
+            }
+          }
+        }
+      }
+    },
+
+    "RemoveUser": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "UserLambda::UserLambda.Functions::RemoveUserAsync",
+        "Runtime": "dotnetcore2.0",
+        "CodeUri": "",
+        "Description": "Function to remove a user",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [ "AWSLambdaFullAccess" ],
+        "Environment": {
+          "Variables": {
+            "UserTable": {
+              "Fn::If": [
+                "CreateUserTable",
+                { "Ref": "UserTable" },
+                { "Ref": "UserTableName" }
+              ]
+            }
+          }
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/users",
+              "Method": "DELETE"
+            }
+          }
+        }
+      }
+    },
+
+    "UserTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Condition": "CreateUserTable",
+      "Properties": {
+        "TableName": {
+          "Fn::If": [
+            "TableNameGenerated",
+            { "Ref": "AWS::NoValue" },
+            { "Ref": "UserTableName" }
+          ]
+        },
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "Id",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "Id",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": { "Ref": "ReadCapacity" },
+          "WriteCapacityUnits": { "Ref": "WriteCapacity" }
+        }
+      }
+    }
+  },
+
+  "Outputs": {
+    "UserTable": {
+      "Value": {
+        "Fn::If": [
+          "CreateUserTable",
+          { "Ref": "UserTable" },
+          { "Ref": "UserTableName" }
+        ]
+      }
+    }
+  }
+}
