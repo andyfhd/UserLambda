@@ -29,6 +29,7 @@ namespace UserLambda
             if (!string.IsNullOrEmpty(userTable))
             {
                 AWSConfigsDynamoDB.Context.TypeMappings[typeof(User)] = new Amazon.Util.TypeMapping(typeof(User), userTable);
+                AWSConfigsDynamoDB.Context.TypeMappings[typeof(Photo)] = new Amazon.Util.TypeMapping(typeof(Photo), "photoInfo");
             }
 
             var config = new DynamoDBContextConfig { Conversion = DynamoDBEntryConversion.V2 };
@@ -40,6 +41,7 @@ namespace UserLambda
             if (!string.IsNullOrEmpty(tableName))
             {
                 AWSConfigsDynamoDB.Context.TypeMappings[typeof(User)] = new Amazon.Util.TypeMapping(typeof(User), tableName);
+                AWSConfigsDynamoDB.Context.TypeMappings[typeof(Photo)] = new Amazon.Util.TypeMapping(typeof(Photo), "photoInfo");
             }
 
             var config = new DynamoDBContextConfig { Conversion = DynamoDBEntryConversion.V2 };
@@ -321,6 +323,53 @@ namespace UserLambda
             {
                 StatusCode = (int)HttpStatusCode.OK,
                 Body = JsonConvert.SerializeObject(new { requestBody.other_user_id }),
+                Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
+            };
+            return response;
+        }
+
+        public async Task<APIGatewayProxyResponse> GetActivityAsync(APIGatewayProxyRequest request, ILambdaContext context)
+        {
+            string userId = null;
+            if (request.PathParameters != null && request.PathParameters.ContainsKey(USER_ID_PATH))
+                userId = request.PathParameters[USER_ID_PATH];
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return new APIGatewayProxyResponse
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Body = "Missing required parameter",
+                    Headers = new Dictionary<string, string> { { "Content-Type", "text/plain" } }
+                };
+            }
+
+            context.Logger.LogLine($"Getting user {userId}");
+            var user = await DDBContext.LoadAsync<User>(userId);
+            context.Logger.LogLine($"Found user: {user != null}");
+
+            if (user == null)
+            {
+                return new APIGatewayProxyResponse
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Body = "User cannot be found",
+                    Headers = new Dictionary<string, string> { { "Content-Type", "text/plain" } }
+                };
+            }
+
+            var search = DDBContext.ScanAsync<Photo>(null);
+            var photos = await search.GetNextSetAsync();
+
+            var relevantPhotos = photos.Where(e => user.followed_friend_id.Contains(e.uploaded_user_id))
+                .OrderByDescending(e => e.created_timestamp)
+                .ToList();
+
+
+            var response = new APIGatewayProxyResponse
+            {
+                StatusCode = (int)HttpStatusCode.OK,
+                Body = JsonConvert.SerializeObject(relevantPhotos),
                 Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
             };
             return response;

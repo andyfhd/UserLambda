@@ -283,6 +283,40 @@
       }
     },
 
+    "FriendUpload": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "UserLambda::UserLambda.Functions::GetActivityAsync",
+        "Runtime": "dotnetcore2.0",
+        "CodeUri": "",
+        "Description": "Function to get friend upload",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [ "AWSLambdaFullAccess" ],
+        "Environment": {
+          "Variables": {
+            "UserTable": {
+              "Fn::If": [
+                "CreateUserTable",
+                { "Ref": "UserTable" },
+                { "Ref": "UserTableName" }
+              ]
+            }
+          }
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/user/{user_id}/friends/upload",
+              "Method": "GET"
+            }
+          }
+        }
+      }
+    },
+
     "UserTable": {
       "Type": "AWS::DynamoDB::Table",
       "Condition": "CreateUserTable",
