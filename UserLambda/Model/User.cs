@@ -12,6 +12,8 @@ namespace UserLambda
         public string email { get; set; }
         public string phone_no { get; set; }
         public string password { get; set; }
+
+        public string push_id { get; set; }
         public List<string> uploaded_photo_id { get; set; }
         public List<string> liked_photo_id { get; set; }
         public List<string> followed_friend_id { get; set; }
