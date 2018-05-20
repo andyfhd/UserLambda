@@ -6,13 +6,13 @@
         "dotnet lambda help",
         "All the command line options for the Lambda command can be specified in this file."
     ],
-    "profile"     : "default",
+    "profile"     : "kangqiang",
     "region"      : "ap-southeast-1",
     "configuration" : "Release",
     "framework"     : "netcoreapp2.0",
     "s3-prefix"     : "UserLambda/",
     "template"      : "serverless.template",
-    "template-parameters" : "\"ShouldCreateTable\"=\"true\";\"UserTableName\"=\"\";\"ReadCapacity\"=\"3\";\"WriteCapacity\"=\"3\"",
-    "s3-bucket"           : "user-lambda-haidong",
-    "stack-name"          : "UserLambda"
+    "template-parameters" : "\"ShouldCreateTable\"=\"true\";\"UserTableName\"=\"userDetail\";\"ReadCapacity\"=\"1\";\"WriteCapacity\"=\"1\"",
+    "s3-bucket"           : "user-deployment-cloud-computing",
+    "stack-name"          : "User"
 }

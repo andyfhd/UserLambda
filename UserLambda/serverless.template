@@ -70,7 +70,7 @@
           "PutResource": {
             "Type": "Api",
             "Properties": {
-              "Path": "/users",
+              "Path": "/user/all",
               "Method": "GET"
             }
           }
@@ -104,7 +104,7 @@
           "PutResource": {
             "Type": "Api",
             "Properties": {
-              "Path": "/users/{Id}",
+              "Path": "/user/{user_id}",
               "Method": "GET"
             }
           }
@@ -139,7 +139,41 @@
           "PutResource": {
             "Type": "Api",
             "Properties": {
-              "Path": "/users",
+              "Path": "/user/signup",
+              "Method": "POST"
+            }
+          }
+        }
+      }
+    },
+
+    "SignIn": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "UserLambda::UserLambda.Functions::SignInAsync",
+        "Runtime": "dotnetcore2.0",
+        "CodeUri": "",
+        "Description": "Function to add a user",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [ "AWSLambdaFullAccess" ],
+        "Environment": {
+          "Variables": {
+            "UserTable": {
+              "Fn::If": [
+                "CreateUserTable",
+                { "Ref": "UserTable" },
+                { "Ref": "UserTableName" }
+              ]
+            }
+          }
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/user/signin",
               "Method": "POST"
             }
           }
@@ -173,8 +207,76 @@
           "PutResource": {
             "Type": "Api",
             "Properties": {
-              "Path": "/users",
+              "Path": "/user/{user_id}",
               "Method": "DELETE"
+            }
+          }
+        }
+      }
+    },
+
+    "Follow": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "UserLambda::UserLambda.Functions::FollowAsync",
+        "Runtime": "dotnetcore2.0",
+        "CodeUri": "",
+        "Description": "Function to follow a user",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [ "AWSLambdaFullAccess" ],
+        "Environment": {
+          "Variables": {
+            "UserTable": {
+              "Fn::If": [
+                "CreateUserTable",
+                { "Ref": "UserTable" },
+                { "Ref": "UserTableName" }
+              ]
+            }
+          }
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/user/{user_id}/follow",
+              "Method": "POST"
+            }
+          }
+        }
+      }
+    },
+
+    "UnFollow": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "UserLambda::UserLambda.Functions::UnFollowAsync",
+        "Runtime": "dotnetcore2.0",
+        "CodeUri": "",
+        "Description": "Function to unfollow a user",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [ "AWSLambdaFullAccess" ],
+        "Environment": {
+          "Variables": {
+            "UserTable": {
+              "Fn::If": [
+                "CreateUserTable",
+                { "Ref": "UserTable" },
+                { "Ref": "UserTableName" }
+              ]
+            }
+          }
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/user/{user_id}/unfollow",
+              "Method": "POST"
             }
           }
         }
@@ -194,13 +296,13 @@
         },
         "AttributeDefinitions": [
           {
-            "AttributeName": "Id",
+            "AttributeName": "user_id",
             "AttributeType": "S"
           }
         ],
         "KeySchema": [
           {
-            "AttributeName": "Id",
+            "AttributeName": "user_id",
             "KeyType": "HASH"
           }
         ],
