@@ -215,8 +215,9 @@ namespace UserLambda
                     Headers = new Dictionary<string, string> { { "Content-Type", "text/plain" } }
                 };
             }
-
+            context.Logger.LogLine($"Getting user {userId}");
             var user = await DDBContext.LoadAsync<User>(userId);
+            context.Logger.LogLine($"Getting other user {requestBody.other_user_id}");
             var followed = await DDBContext.LoadAsync<User>(requestBody.other_user_id);
 
             if (user == null)
@@ -345,7 +346,9 @@ namespace UserLambda
             }
 
             context.Logger.LogLine($"Getting user {userId}");
-            var user = await DDBContext.LoadAsync<User>(userId);
+            var searchUser = DDBContext.ScanAsync<User>(null);
+            var users = await searchUser.GetNextSetAsync();
+            var user = users.FirstOrDefault(e => e.user_id == userId);
             context.Logger.LogLine($"Found user: {user != null}");
 
             if (user == null)
@@ -358,18 +361,40 @@ namespace UserLambda
                 };
             }
 
-            var search = DDBContext.ScanAsync<Photo>(null);
-            var photos = await search.GetNextSetAsync();
+            var searchPhoto = DDBContext.ScanAsync<Photo>(null);
+            var photos = await searchPhoto.GetNextSetAsync();
 
             var relevantPhotos = photos.Where(e => user.followed_friend_id.Contains(e.uploaded_user_id))
                 .OrderByDescending(e => e.created_timestamp)
                 .ToList();
 
+            var result = relevantPhotos.Select(p => new
+            {
+                p.photo_id,
+                p.original_photo_id,
+                p.thumbnail_photo_id,
+                p.created_timestamp,
+                uploaded_by = users.Where(u => u.user_id == p.uploaded_user_id).Select(u => new
+                {
+                    u.user_id,
+                    u.name,
+                    u.email,
+                    u.phone_no
+                }).FirstOrDefault(),
+                liked_by = users.Where(u => p.liked_user_id.Contains(u.user_id)).Select(u => new
+                {
+                    u.user_id,
+                    u.name,
+                    u.email,
+                    u.phone_no
+                })
+            });
+
 
             var response = new APIGatewayProxyResponse
             {
                 StatusCode = (int)HttpStatusCode.OK,
-                Body = JsonConvert.SerializeObject(relevantPhotos),
+                Body = JsonConvert.SerializeObject(result),
                 Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
             };
             return response;

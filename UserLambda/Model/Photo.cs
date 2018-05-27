@@ -12,6 +12,6 @@ namespace UserLambda
         public List<string> liked_user_id { get; set; }
         public string original_photo_id { get; set; }
         public string thumbnail_photo_id { get; set; }
-        public DateTime created_timestamp { get; set; }
+        public string created_timestamp { get; set; }
     }
 }
