@@ -90,6 +90,7 @@ namespace UserLambda
                 {
                     p.photo_id,
                     p.original_url,
+                    p.thumbnail_url,
                     p.uploaded_user_id,
                     uploaded_by = users.Where(u => u.user_id == p.uploaded_user_id).Select(u => new
                     {
