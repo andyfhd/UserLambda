@@ -47,7 +47,7 @@
     "GetUsers": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "Handler": "UserLambda::UserLambda.Functions::GetUsersAsync",
+        "Handler": "UserLambda::UserLambda.AccountFunctions::GetUsersAsync",
         "Runtime": "dotnetcore2.0",
         "CodeUri": "",
         "Description": "Function to get a list of users",
@@ -81,7 +81,7 @@
     "GetUser": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "Handler": "UserLambda::UserLambda.Functions::GetUserAsync",
+        "Handler": "UserLambda::UserLambda.AccountFunctions::GetUserAsync",
         "Runtime": "dotnetcore2.0",
         "CodeUri": "",
         "Description": "Function to get a single user",
@@ -116,7 +116,7 @@
     "AddUser": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "Handler": "UserLambda::UserLambda.Functions::AddUserAsync",
+        "Handler": "UserLambda::UserLambda.AccountFunctions::AddUserAsync",
         "Runtime": "dotnetcore2.0",
         "CodeUri": "",
         "Description": "Function to add a user",
@@ -150,7 +150,7 @@
     "SignIn": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "Handler": "UserLambda::UserLambda.Functions::SignInAsync",
+        "Handler": "UserLambda::UserLambda.AccountFunctions::SignInAsync",
         "Runtime": "dotnetcore2.0",
         "CodeUri": "",
         "Description": "Function to add a user",
@@ -184,7 +184,7 @@
     "RemoveUser": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "Handler": "UserLambda::UserLambda.Functions::RemoveUserAsync",
+        "Handler": "UserLambda::UserLambda.AccountFunctions::RemoveUserAsync",
         "Runtime": "dotnetcore2.0",
         "CodeUri": "",
         "Description": "Function to remove a user",
@@ -218,7 +218,7 @@
     "Follow": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "Handler": "UserLambda::UserLambda.Functions::FollowAsync",
+        "Handler": "UserLambda::UserLambda.FollowFunctions::FollowAsync",
         "Runtime": "dotnetcore2.0",
         "CodeUri": "",
         "Description": "Function to follow a user",
@@ -252,7 +252,7 @@
     "UnFollow": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "Handler": "UserLambda::UserLambda.Functions::UnFollowAsync",
+        "Handler": "UserLambda::UserLambda.FollowFunctions::UnFollowAsync",
         "Runtime": "dotnetcore2.0",
         "CodeUri": "",
         "Description": "Function to unfollow a user",
@@ -283,10 +283,78 @@
       }
     },
 
+    "Like": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "UserLambda::UserLambda.LikeFunctions::LikeAsync",
+        "Runtime": "dotnetcore2.0",
+        "CodeUri": "",
+        "Description": "Function to follow a user",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [ "AWSLambdaFullAccess" ],
+        "Environment": {
+          "Variables": {
+            "UserTable": {
+              "Fn::If": [
+                "CreateUserTable",
+                { "Ref": "UserTable" },
+                { "Ref": "UserTableName" }
+              ]
+            }
+          }
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/user/{user_id}/like",
+              "Method": "POST"
+            }
+          }
+        }
+      }
+    },
+
+    "Unlike": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "UserLambda::UserLambda.LikeFunctions::UnlikeAsync",
+        "Runtime": "dotnetcore2.0",
+        "CodeUri": "",
+        "Description": "Function to unfollow a user",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [ "AWSLambdaFullAccess" ],
+        "Environment": {
+          "Variables": {
+            "UserTable": {
+              "Fn::If": [
+                "CreateUserTable",
+                { "Ref": "UserTable" },
+                { "Ref": "UserTableName" }
+              ]
+            }
+          }
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/user/{user_id}/unlike",
+              "Method": "POST"
+            }
+          }
+        }
+      }
+    },
+
     "FriendUpload": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "Handler": "UserLambda::UserLambda.Functions::GetActivityAsync",
+        "Handler": "UserLambda::UserLambda.ActivityFunctions::GetActivityAsync",
         "Runtime": "dotnetcore2.0",
         "CodeUri": "",
         "Description": "Function to get friend upload",
