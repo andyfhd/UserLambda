@@ -1,0 +1,387 @@
+{
+	"info": {
+		"_postman_id": "d65a8cf6-f7da-4a2f-bbaa-90ef87d31db3",
+		"name": "Clound Computing Project API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Account",
+			"description": null,
+			"item": [
+				{
+					"name": "Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\":\"test@test.com\",\n\t\"name\":\"test\",\n\t\"phone_no\":\"123456\",\n\t\"password\":\"test\",\n\t\"push_id\":\"some push id\"\n}"
+						},
+						"url": {
+							"raw": "https://xqja70g6v8.execute-api.us-east-1.amazonaws.com/Prod/user/signup",
+							"protocol": "https",
+							"host": [
+								"xqja70g6v8",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"Prod",
+								"user",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign In",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\":\"test@test.com\",\n\t\"password\":\"test\"\n}"
+						},
+						"url": {
+							"raw": "https://xqja70g6v8.execute-api.us-east-1.amazonaws.com/Prod/user/signin",
+							"protocol": "https",
+							"host": [
+								"xqja70g6v8",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"Prod",
+								"user",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://xqja70g6v8.execute-api.us-east-1.amazonaws.com/Prod/user/all",
+							"protocol": "https",
+							"host": [
+								"xqja70g6v8",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"Prod",
+								"user",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://xqja70g6v8.execute-api.us-east-1.amazonaws.com/Prod/user/dc6c3d3d-c9b2-4551-8bf4-5b05b6888a74",
+							"protocol": "https",
+							"host": [
+								"xqja70g6v8",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"Prod",
+								"user",
+								"dc6c3d3d-c9b2-4551-8bf4-5b05b6888a74"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://xqja70g6v8.execute-api.us-east-1.amazonaws.com/Prod/user/29c2450f-d121-40ff-9dc8-9d717a0f2fd3",
+							"protocol": "https",
+							"host": [
+								"xqja70g6v8",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"Prod",
+								"user",
+								"29c2450f-d121-40ff-9dc8-9d717a0f2fd3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Follow",
+			"description": null,
+			"item": [
+				{
+					"name": "Follow",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"other_user_id\":\"7abfa117-02b9-49b2-9820-765d12b0f842\"\n}"
+						},
+						"url": {
+							"raw": "https://xqja70g6v8.execute-api.us-east-1.amazonaws.com/Prod/user/dc6c3d3d-c9b2-4551-8bf4-5b05b6888a74/follow",
+							"protocol": "https",
+							"host": [
+								"xqja70g6v8",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"Prod",
+								"user",
+								"dc6c3d3d-c9b2-4551-8bf4-5b05b6888a74",
+								"follow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unfollow",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"other_user_id\":\"7abfa117-02b9-49b2-9820-765d12b0f842\"\n}"
+						},
+						"url": {
+							"raw": "https://xqja70g6v8.execute-api.us-east-1.amazonaws.com/Prod/user/dc6c3d3d-c9b2-4551-8bf4-5b05b6888a74/unfollow",
+							"protocol": "https",
+							"host": [
+								"xqja70g6v8",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"Prod",
+								"user",
+								"dc6c3d3d-c9b2-4551-8bf4-5b05b6888a74",
+								"unfollow"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Like",
+			"description": null,
+			"item": [
+				{
+					"name": "Like",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"photo_id\":\"male_swimmer_2.jpg\"\n}"
+						},
+						"url": {
+							"raw": "https://xqja70g6v8.execute-api.us-east-1.amazonaws.com/Prod/user/dc6c3d3d-c9b2-4551-8bf4-5b05b6888a74/like",
+							"protocol": "https",
+							"host": [
+								"xqja70g6v8",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"Prod",
+								"user",
+								"dc6c3d3d-c9b2-4551-8bf4-5b05b6888a74",
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unlike",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"photo_id\":\"male_swimmer_2.jpg\"\n}"
+						},
+						"url": {
+							"raw": "https://xqja70g6v8.execute-api.us-east-1.amazonaws.com/Prod/user/dc6c3d3d-c9b2-4551-8bf4-5b05b6888a74/unlike",
+							"protocol": "https",
+							"host": [
+								"xqja70g6v8",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"Prod",
+								"user",
+								"dc6c3d3d-c9b2-4551-8bf4-5b05b6888a74",
+								"unlike"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Activity",
+			"description": null,
+			"item": [
+				{
+					"name": "Friend Upload",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://xqja70g6v8.execute-api.us-east-1.amazonaws.com/Prod/user/dc6c3d3d-c9b2-4551-8bf4-5b05b6888a74/friends/upload",
+							"protocol": "https",
+							"host": [
+								"xqja70g6v8",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"Prod",
+								"user",
+								"dc6c3d3d-c9b2-4551-8bf4-5b05b6888a74",
+								"friends",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Photo",
+			"description": null,
+			"item": [
+				{
+					"name": "Upload",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": \"c205ff1c-1483-4cb7-9beb-65f746c75877\",\n  \"s3_object_key\": \"male_swimmer_1.jpg\"\n}"
+						},
+						"url": {
+							"raw": "https://tcxfccwmkb.execute-api.us-east-1.amazonaws.com/Dev/photo",
+							"protocol": "https",
+							"host": [
+								"tcxfccwmkb",
+								"execute-api",
+								"us-east-1",
+								"amazonaws",
+								"com"
+							],
+							"path": [
+								"Dev",
+								"photo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
